@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Login Debug</title>
+  <style>
+    body { font-family: monospace; background: #050810; color: #e8edf8; padding: 2rem; }
+    input { display: block; width: 100%; max-width: 400px; padding: 0.6rem; margin: 0.5rem 0 1rem;
+            background: #0a1020; border: 1px solid #1e6fff; color: #fff; border-radius: 6px; font-size: 1rem; }
+    button { padding: 0.7rem 2rem; background: #1e6fff; color: #fff; border: none;
+             border-radius: 6px; font-size: 1rem; cursor: pointer; }
+    #log { margin-top: 2rem; background: #0a1020; border: 1px solid #1a3a7a;
+           border-radius: 8px; padding: 1.5rem; white-space: pre-wrap; font-size: 0.85rem;
+           min-height: 100px; color: #8899bb; }
+    .ok  { color: #0aff9d; }
+    .err { color: #ff6b6b; }
+  </style>
+</head>
+<body>
+  <h2 style="color:#3b82f6;margin-bottom:1.5rem">🔍 Login Debug</h2>
+  <p style="color:#8899bb;margin-bottom:1.5rem">This page tests Firebase login directly and shows the exact error.<br>
+  <strong style="color:#ff6b6b">Delete this file after you fix login.</strong></p>
+
+  <label>Email</label>
+  <input id="d-email" type="email" value="christijerina46@gmail.com">
+
+  <label>Password</label>
+  <input id="d-pass" type="password" placeholder="Enter your password">
+
+  <button id="d-btn">Test Login</button>
+
+  <div id="log">Waiting…</div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js';
+    import { getAuth, signInWithEmailAndPassword, signOut }
+      from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js';
+    import { firebaseConfig } from '../firebase-config.js';
+
+    const log = document.getElementById('log');
+    function write(msg, cls = '') {
+      const t = new Date().toLocaleTimeString();
+      log.innerHTML += `<span class="${cls}">[${t}] ${msg}\n</span>`;
+    }
+
+    write('Firebase config loaded. Project: ' + firebaseConfig.projectId);
+
+    let app, auth;
+    try {
+      app  = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+      write('Firebase initialized OK', 'ok');
+    } catch(e) {
+      write('Init error: ' + e.message, 'err');
+    }
+
+    document.getElementById('d-btn').addEventListener('click', async () => {
+      const email = document.getElementById('d-email').value.trim();
+      const pass  = document.getElementById('d-pass').value;
+      write(`Attempting login as: ${email}`);
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, pass);
+        write('✅ LOGIN SUCCESS!', 'ok');
+        write('UID: ' + cred.user.uid, 'ok');
+        write('Email: ' + cred.user.email, 'ok');
+        write('Email verified: ' + cred.user.emailVerified, 'ok');
+        await signOut(auth);
+        write('Signed out cleanly.', 'ok');
+        write('→ Go to /admin/ and log in normally.', 'ok');
+      } catch(e) {
+        write('❌ LOGIN FAILED', 'err');
+        write('Error code: ' + e.code, 'err');
+        write('Error message: ' + e.message, 'err');
+        write('');
+        if (e.code === 'auth/invalid-credential') {
+          write('DIAGNOSIS: Wrong password, OR the user does not exist yet.', 'err');
+          write('→ Go to Firebase Console → Authentication → Users', 'err');
+          write('→ Check christijerina46@gmail.com exists', 'err');
+          write('→ If it exists, reset the password via Firebase Console', 'err');
+        }
+        if (e.code === 'auth/unauthorized-domain') {
+          write('DIAGNOSIS: This domain is not authorized.', 'err');
+          write('→ Firebase Console → Authentication → Settings → Authorized domains', 'err');
+          write('→ Add: ' + location.hostname, 'err');
+        }
+        if (e.code === 'auth/too-many-requests') {
+          write('DIAGNOSIS: Account temporarily locked — too many failed attempts.', 'err');
+          write('→ Wait a few minutes, or reset password via Firebase Console.', 'err');
+        }
+      }
+    });
+  </script>
+</body>
+</html>
