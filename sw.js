@@ -4,7 +4,7 @@
  * Provides offline shell so the app works even without connectivity.
  */
 
-const CACHE_NAME   = 'cls-universe-v2';
+const CACHE_NAME   = 'cls-universe-v3';
 const BASE         = 'https://legend200711.github.io/universe';
 const OFFLINE_PAGE = `${BASE}/index.html`;
 

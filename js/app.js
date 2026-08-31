@@ -6,8 +6,7 @@
 import UniverseCanvas from './canvas.js';
 import {
   onAuthChange,
-  getPublishedWebsites,
-  getPublishedProjects,
+  subscribeToPublishedPortals,
   getPublishedAnnouncements,
 } from './firebase-service.js';
 
@@ -228,43 +227,39 @@ filterChips.forEach(chip => {
   });
 });
 
-// ── Load public data ─────────────────────────────────────────────
-async function loadPublicData() {
+// ── Load public data (realtime) ───────────────────────────────────
+function loadPublicData() {
+  // Show Firebase is configured — use real-time listener
+  portalsLoading && (portalsLoading.style.display = 'grid');
+
   try {
-    // Portals
-    portalsLoading && (portalsLoading.style.display = 'grid');
-    const [websites, projects] = await Promise.all([
-      getPublishedWebsites(),
-      getPublishedProjects(),
-    ]);
+    // Realtime portal subscription — fires immediately and on every change
+    subscribeToPublishedPortals(portals => {
+      portalsLoading && (portalsLoading.style.display = 'none');
+      allPortals = portals;
+      filterPortals();
 
-    allPortals = [
-      ...websites.map(w => ({ ...w, _type: 'website' })),
-      ...projects.map(p => ({ ...p, _type: 'project' })),
-    ].sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+      // Update stats
+      const live = portals.filter(p => p.status === 'live' && p._type === 'website').length;
+      document.getElementById('stat-worlds')   && (document.getElementById('stat-worlds').textContent   = live);
+      document.getElementById('stat-projects') && (document.getElementById('stat-projects').textContent = portals.length);
+    });
 
-    portalsLoading && (portalsLoading.style.display = 'none');
-    renderPortals(allPortals);
-
-    // Announcements ticker
-    const announcements = await getPublishedAnnouncements();
-    if (announcements.length) renderTicker(announcements);
-
-    // Stats counter
-    document.getElementById('stat-worlds') && (
-      document.getElementById('stat-worlds').textContent = websites.filter(w => w.status === 'live').length
-    );
-    document.getElementById('stat-projects') && (
-      document.getElementById('stat-projects').textContent = projects.length
-    );
+    // Announcements (one-time fetch is fine)
+    getPublishedAnnouncements()
+      .then(items => { if (items.length) renderTicker(items); })
+      .catch(err => console.warn('Announcements error:', err.message));
 
   } catch (err) {
-    console.warn('Firebase load error:', err.message);
+    console.error('Firebase init error:', err.code || '', err.message);
     portalsLoading && (portalsLoading.style.display = 'none');
-    if (err.message.includes('not configured')) {
+    if (err.message && err.message.includes('not configured')) {
       showDemoPortals();
     } else {
+      // Show error on page so it's visible during debugging
       portalsEmpty && (portalsEmpty.style.display = 'block');
+      portalsEmpty && (portalsEmpty.querySelector('p').textContent =
+        `Firebase error: ${err.message} — Check console for details.`);
     }
   }
 }
@@ -358,7 +353,7 @@ try {
     if (adminLink) adminLink.style.display = user ? 'inline-flex' : 'none';
   });
 } catch (e) {
-  // Firebase not configured yet — suppress
+  console.warn('Auth listener error:', e.message);
 }
 
 // ── PWA Install prompt ────────────────────────────────────────────

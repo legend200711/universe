@@ -1,7 +1,6 @@
 /**
  * Firebase Service Layer
  * All Firestore interactions go here — never scattered through UI code.
- * Replace firebase-config.js placeholders before using.
  */
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js';
@@ -21,9 +20,9 @@ import {
   deleteDoc,
   getDocs,
   getDoc,
+  onSnapshot,
   query,
   where,
-  orderBy,
   serverTimestamp,
 } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js';
 
@@ -82,16 +81,21 @@ function docRef(collName, id) {
 // ── Websites ──────────────────────────────────────────────────────
 export async function getPublishedWebsites() {
   ensureInit();
-  const q = query(colRef('websites'), where('published', '==', true), orderBy('order', 'asc'));
+  // No orderBy on server — avoids requiring a composite Firestore index.
+  // Sorting is done client-side after fetch.
+  const q = query(colRef('websites'), where('published', '==', true));
   const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  return snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 }
 
 export async function getAllWebsites() {
   ensureInit();
-  const q = query(colRef('websites'), orderBy('order', 'asc'));
-  const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  const snap = await getDocs(colRef('websites'));
+  return snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 }
 
 export async function saveWebsite(data, id = null) {
@@ -120,16 +124,19 @@ export async function deleteWebsite(id) {
 // ── Projects ──────────────────────────────────────────────────────
 export async function getPublishedProjects() {
   ensureInit();
-  const q = query(colRef('projects'), where('published', '==', true), orderBy('order', 'asc'));
+  const q = query(colRef('projects'), where('published', '==', true));
   const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  return snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 }
 
 export async function getAllProjects() {
   ensureInit();
-  const q = query(colRef('projects'), orderBy('order', 'asc'));
-  const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  const snap = await getDocs(colRef('projects'));
+  return snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 }
 
 export async function saveProject(data, id = null) {
@@ -158,14 +165,14 @@ export async function deleteProject(id) {
 // ── Announcements ─────────────────────────────────────────────────
 export async function getPublishedAnnouncements() {
   ensureInit();
-  const q = query(colRef('announcements'), where('published', '==', true), orderBy('createdAt', 'desc'));
+  const q = query(colRef('announcements'), where('published', '==', true));
   const snap = await getDocs(q);
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
 export async function getAllAnnouncements() {
   ensureInit();
-  const snap = await getDocs(query(colRef('announcements'), orderBy('createdAt', 'desc')));
+  const snap = await getDocs(colRef('announcements'));
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
@@ -202,4 +209,42 @@ export async function getSettings() {
 export async function saveSettings(data) {
   ensureInit();
   await setDoc(docRef('settings', 'global'), { ...data, updatedAt: serverTimestamp() }, { merge: true });
+}
+
+// ── Realtime listener for published websites + projects ───────────
+// Calls back with combined sorted array whenever Firestore data changes.
+export function subscribeToPublishedPortals(callback) {
+  ensureInit();
+
+  let websitesData = [];
+  let projectsData = [];
+
+  function merge() {
+    const combined = [
+      ...websitesData.map(w => ({ ...w, _type: 'website' })),
+      ...projectsData.map(p => ({ ...p, _type: 'project' })),
+    ].sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+    callback(combined);
+  }
+
+  const unsubW = onSnapshot(
+    query(colRef('websites'), where('published', '==', true)),
+    snap => {
+      websitesData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      merge();
+    },
+    err => console.error('Websites listener error:', err.code, err.message)
+  );
+
+  const unsubP = onSnapshot(
+    query(colRef('projects'), where('published', '==', true)),
+    snap => {
+      projectsData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      merge();
+    },
+    err => console.error('Projects listener error:', err.code, err.message)
+  );
+
+  // Return unsubscribe function
+  return () => { unsubW(); unsubP(); };
 }
