@@ -1,0 +1,61 @@
+{
+  "name": "Chris Legend of Shadows Universe",
+  "short_name": "CLS Universe",
+  "description": "The digital universe of Chris Legend of Shadows — cinematic gateway to all worlds and portals.",
+  "start_url": "https://legend200711.github.io/universe/",
+  "scope": "https://legend200711.github.io/universe/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#050810",
+  "theme_color": "#050810",
+  "categories": ["entertainment", "lifestyle"],
+  "icons": [
+    {
+      "src": "icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Universe Portals",
+      "short_name": "Portals",
+      "description": "Jump to the Universe portals",
+      "url": "https://legend200711.github.io/universe/#portals",
+      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Admin Dashboard",
+      "short_name": "Dashboard",
+      "description": "Owner control center",
+      "url": "https://legend200711.github.io/universe/admin/",
+      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper: is the request from the authenticated owner? ──────────
+    function isOwner() {
+      return request.auth != null
+          && request.auth.token.email == "christijerina46@gmail.com";
+    }
+
+    // ── Helper: is the document published? ───────────────────────────
+    function isPublished() {
+      return resource.data.published == true;
+    }
+
+    // ── websites ─────────────────────────────────────────────────────
+    match /websites/{docId} {
+      allow read: if isPublished() || isOwner();
+      allow create, update, delete: if isOwner();
+    }
+
+    // ── projects ─────────────────────────────────────────────────────
+    match /projects/{docId} {
+      allow read: if isPublished() || isOwner();
+      allow create, update, delete: if isOwner();
+    }
+
+    // ── announcements ─────────────────────────────────────────────────
+    match /announcements/{docId} {
+      allow read: if isPublished() || isOwner();
+      allow create, update, delete: if isOwner();
+    }
+
+    // ── media ─────────────────────────────────────────────────────────
+    match /media/{docId} {
+      allow read: if isPublished() || isOwner();
+      allow create, update, delete: if isOwner();
+    }
+
+    // ── settings (owner reads; owner writes) ──────────────────────────
+    match /settings/{docId} {
+      allow read: if true;          // allow public to read global settings
+      allow write: if isOwner();
+    }
+
+    // ── Deny everything else ──────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

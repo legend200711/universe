@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Owner Dashboard — Chris Legend of Shadows Universe</title>
+  <link rel="icon" href="../icons/icon-192.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+  <!-- Toast -->
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       LOGIN PAGE
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="admin-login-page" role="main" aria-label="Admin login">
+    <div class="login-box">
+      <div class="login-icon" aria-hidden="true">🔒</div>
+      <h1 class="login-title">OWNER ACCESS</h1>
+      <p class="login-subtitle">Chris Legend of Shadows Universe</p>
+
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email</label>
+          <input
+            id="login-email"
+            type="email"
+            class="form-input"
+            value="christijerina46@gmail.com"
+            readonly
+            aria-readonly="true"
+          >
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password</label>
+          <input
+            id="login-password"
+            type="password"
+            class="form-input"
+            required
+            autocomplete="current-password"
+            placeholder="Your private password"
+            aria-required="true"
+          >
+          <p id="login-error" class="error-msg" role="alert"></p>
+        </div>
+        <button type="submit" id="login-btn" class="btn-login">
+          ACCESS THE UNIVERSE
+        </button>
+      </form>
+
+      <p style="margin-top:1.5rem;font-size:0.75rem;color:var(--text-muted)">
+        <a href="../index.html" style="color:var(--blue-glow)">← Back to Universe</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       ADMIN APP (shown after login)
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="admin-app" style="display:none" role="main" aria-label="Admin dashboard">
+
+    <!-- Sidebar -->
+    <aside id="admin-sidebar" role="navigation" aria-label="Admin navigation">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">CHRIS <span>LEGEND</span></div>
+        <div class="sidebar-role">✦ OWNER CONTROL CENTER</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <p class="sidebar-section-label">CONTENT</p>
+        <button class="sidebar-link active" data-panel="overview">
+          <span class="s-icon">📊</span>
+          <span class="s-label">Overview</span>
+        </button>
+        <button class="sidebar-link" data-panel="websites">
+          <span class="s-icon">🌐</span>
+          <span class="s-label">Websites</span>
+        </button>
+        <button class="sidebar-link" data-panel="projects">
+          <span class="s-icon">🚀</span>
+          <span class="s-label">Projects</span>
+        </button>
+        <button class="sidebar-link" data-panel="announcements">
+          <span class="s-icon">📢</span>
+          <span class="s-label">Announcements</span>
+        </button>
+
+        <p class="sidebar-section-label">SYSTEM</p>
+        <button class="sidebar-link" data-panel="settings">
+          <span class="s-icon">⚙️</span>
+          <span class="s-label">Settings</span>
+        </button>
+        <a href="../index.html" class="sidebar-link" target="_blank">
+          <span class="s-icon">🔗</span>
+          <span class="s-label">View Universe</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="logout-btn" class="btn-logout">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Main area -->
+    <div id="admin-main">
+      <!-- Topbar -->
+      <header id="admin-topbar">
+        <div style="display:flex;align-items:center;gap:1rem">
+          <button id="sidebar-toggle" class="btn-icon" aria-label="Toggle sidebar">☰</button>
+          <h2 id="topbar-section-title" class="admin-topbar-title">Overview</h2>
+        </div>
+        <div class="topbar-actions">
+          <a href="../index.html" class="btn-icon" target="_blank" title="View public site" aria-label="View public site">↗</a>
+        </div>
+      </header>
+
+      <!-- Panels -->
+      <div id="admin-panel">
+
+        <!-- ── Overview ──────────────────────────────────────── -->
+        <section id="panel-overview" class="admin-panel-section active">
+          <div class="stats-row">
+            <div class="stat-tile">
+              <div class="stat-tile-label">Live Websites</div>
+              <div class="stat-tile-value" id="tile-live">—</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-tile-label">Total Websites</div>
+              <div class="stat-tile-value" id="tile-websites">—</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-tile-label">Projects</div>
+              <div class="stat-tile-value" id="tile-projects">—</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-tile-label">Drafts</div>
+              <div class="stat-tile-value" id="tile-draft">—</div>
+            </div>
+          </div>
+
+          <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);padding:2rem;max-width:640px">
+            <h3 style="font-family:var(--font-display);font-size:1rem;letter-spacing:0.08em;margin-bottom:1rem">QUICK ACTIONS</h3>
+            <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+              <button class="btn-add" id="btn-quick-website" onclick="document.querySelector('[data-panel=websites]').click();setTimeout(()=>document.getElementById('btn-add-website').click(),100)">+ Add Website</button>
+              <button class="btn-add" style="background:rgba(10,255,157,0.15);color:var(--green-accent);border:1px solid rgba(10,255,157,0.3)" id="btn-quick-project" onclick="document.querySelector('[data-panel=projects]').click();setTimeout(()=>document.getElementById('btn-add-project').click(),100)">+ Add Project</button>
+              <button class="btn-add" style="background:rgba(100,80,200,0.15);color:#a78bfa;border:1px solid rgba(100,80,200,0.3)" onclick="document.querySelector('[data-panel=announcements]').click();setTimeout(()=>document.getElementById('btn-add-announcement').click(),100)">+ Announcement</button>
+            </div>
+
+            <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border-subtle)">
+              <h3 style="font-family:var(--font-display);font-size:0.9rem;letter-spacing:0.08em;margin-bottom:0.75rem;color:var(--text-secondary)">FIREBASE STATUS</h3>
+              <div id="firebase-status" style="font-family:var(--font-mono);font-size:0.8rem;color:var(--text-muted)">
+                Checking connection…
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Websites ──────────────────────────────────────── -->
+        <section id="panel-websites" class="admin-panel-section">
+          <div class="admin-section-header">
+            <h3 class="admin-section-title">WEBSITE PORTALS</h3>
+            <button id="btn-add-website" class="btn-add">+ Add Website</button>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table" role="grid">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Visibility</th>
+                  <th scope="col">Order</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="websites-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ── Projects ──────────────────────────────────────── -->
+        <section id="panel-projects" class="admin-panel-section">
+          <div class="admin-section-header">
+            <h3 class="admin-section-title">PROJECTS & REALMS</h3>
+            <button id="btn-add-project" class="btn-add">+ Add Project</button>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table" role="grid">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Visibility</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="projects-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ── Announcements ─────────────────────────────────── -->
+        <section id="panel-announcements" class="admin-panel-section">
+          <div class="admin-section-header">
+            <h3 class="admin-section-title">TICKER ANNOUNCEMENTS</h3>
+            <button id="btn-add-announcement" class="btn-add">+ Add Announcement</button>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table" role="grid">
+              <thead>
+                <tr>
+                  <th scope="col">Message</th>
+                  <th scope="col">Visibility</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="announcements-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ── Settings ──────────────────────────────────────── -->
+        <section id="panel-settings" class="admin-panel-section">
+          <div style="max-width:560px">
+            <div class="admin-section-header">
+              <h3 class="admin-section-title">UNIVERSE SETTINGS</h3>
+            </div>
+
+            <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-card);padding:2rem;display:flex;flex-direction:column;gap:1.25rem">
+              <div class="form-group">
+                <label class="form-label" for="s-site-title">Universe Display Title</label>
+                <input id="s-site-title" type="text" class="form-input" placeholder="Chris Legend of Shadows Universe">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="s-tagline">Tagline / Subtitle</label>
+                <input id="s-tagline" type="text" class="form-input" placeholder="Enter the Universe">
+              </div>
+              <div class="toggle-group">
+                <label class="toggle-switch">
+                  <input id="s-new-tab" type="checkbox" checked>
+                  <span class="toggle-track"></span>
+                </label>
+                <span class="toggle-label">Open portals in new tab</span>
+              </div>
+
+              <div style="padding-top:0.5rem;border-top:1px solid var(--border-subtle)">
+                <button id="btn-save-settings" class="btn-save">Save Settings</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /admin-panel -->
+    </div><!-- /admin-main -->
+  </div><!-- /admin-app -->
+
+  <!-- ══════════════════════════════════════════════════════════
+       MODAL — Add / Edit
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Edit form">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-title" class="modal-title">Add Website</h3>
+        <button id="modal-close" class="modal-close" aria-label="Close dialog">✕</button>
+      </div>
+      <form id="modal-form" novalidate></form>
+      <div class="modal-footer">
+        <button id="btn-modal-cancel" class="btn-cancel">Cancel</button>
+        <button id="btn-modal-save"   class="btn-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       CONFIRM DELETE DIALOG
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="confirm-dialog" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Confirm delete">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirm Delete</h3>
+        <button id="confirm-close-x" class="modal-close" aria-label="Cancel">✕</button>
+      </div>
+      <p id="confirm-msg" class="confirm-msg"></p>
+      <div class="modal-footer">
+        <button id="confirm-cancel-btn" class="btn-cancel">Cancel</button>
+        <button id="confirm-ok" class="btn-confirm-delete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="admin.js"></script>
+
+  <!-- Firebase status check -->
+  <script type="module">
+    import { firebaseConfig } from '../firebase-config.js';
+    const el = document.getElementById('firebase-status');
+    if (el) {
+      if (firebaseConfig.apiKey === 'REPLACE_WITH_YOUR_API_KEY') {
+        el.innerHTML = '<span style="color:#ff6b6b">⚠ Firebase not configured. Edit universe/firebase-config.js with your real credentials.</span>';
+      } else {
+        el.innerHTML = '<span style="color:var(--green-accent)">✓ Firebase configuration found. Authentication active.</span>';
+      }
+    }
+  </script>
+</body>
+</html>

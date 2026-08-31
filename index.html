@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The digital universe of Chris Legend of Shadows — explore worlds, portals and realms.">
+  <meta name="theme-color" content="#050810">
+  <meta property="og:title" content="Chris Legend of Shadows Universe">
+  <meta property="og:description" content="Enter the Universe — a cinematic gateway to the worlds of Chris Legend of Shadows.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://legend200711.github.io/universe/">
+  <link rel="canonical" href="https://legend200711.github.io/universe/">
+
+  <title>Chris Legend of Shadows Universe</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Icons -->
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <!-- ── Canvas Background ─────────────────────────────────────── -->
+  <canvas id="universe-canvas" aria-hidden="true"></canvas>
+
+  <!-- ── Intro Screen ─────────────────────────────────────────── -->
+  <div id="intro-screen" role="dialog" aria-modal="true" aria-label="Universe intro">
+    <div class="intro-content">
+      <div class="intro-logo-ring" aria-hidden="true">
+        <span class="ring-icon">✦</span>
+      </div>
+      <h1 class="intro-title">CHRIS LEGEND<br>OF SHADOWS</h1>
+      <p class="intro-subtitle">UNIVERSE</p>
+      <button id="enter-universe-btn" class="intro-enter-btn" aria-label="Enter the Universe">
+        ENTER THE UNIVERSE
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Portal Transition Overlay ────────────────────────────── -->
+  <div id="portal-transition" aria-hidden="true" role="presentation">
+    <span id="portal-transition-text" class="portal-transition-text">ENTERING…</span>
+  </div>
+
+  <!-- ── Toast Container ──────────────────────────────────────── -->
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       HEADER / NAV
+  ═══════════════════════════════════════════════════════════ -->
+  <header id="site-header" role="banner">
+    <a href="#hero" class="header-logo" aria-label="Chris Legend of Shadows Universe — home">
+      CHRIS <span>LEGEND</span> OF SHADOWS
+    </a>
+
+    <nav class="nav-desktop" aria-label="Primary navigation">
+      <a href="#hero"          class="nav-link" data-nav="hero">Home</a>
+      <a href="#portals"       class="nav-link" data-nav="portals">Universe</a>
+      <a href="#projects"      class="nav-link" data-nav="projects">Projects</a>
+      <a href="#about"         class="nav-link" data-nav="about">About</a>
+      <a href="#contact"       class="nav-link" data-nav="contact">Contact</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button id="reduce-motion-btn" class="btn-reduce-motion" aria-pressed="false" title="Toggle visual effects">
+        Reduce Motion
+      </button>
+      <a href="admin/index.html" id="admin-nav-link" class="btn-admin-nav" style="display:none" aria-label="Admin dashboard">
+        ⚙ Dashboard
+      </a>
+    </div>
+
+    <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- Mobile menu -->
+  <nav id="mobile-menu" aria-label="Mobile navigation">
+    <a href="#hero"     class="mobile-nav-link">Home</a>
+    <a href="#portals"  class="mobile-nav-link">Universe</a>
+    <a href="#projects" class="mobile-nav-link">Projects</a>
+    <a href="#about"    class="mobile-nav-link">About</a>
+    <a href="#contact"  class="mobile-nav-link">Contact</a>
+    <a href="admin/index.html" class="mobile-nav-link" style="color:var(--blue-glow)">Admin</a>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════════════════
+       MAIN CONTENT
+  ═══════════════════════════════════════════════════════════ -->
+  <main id="main-content">
+
+    <!-- ── Hero ────────────────────────────────────────────────── -->
+    <section id="hero" data-section="hero" aria-label="Hero">
+      <p class="hero-eyebrow">WELCOME TO THE UNIVERSE</p>
+      <h1 class="hero-title">
+        CHRIS LEGEND<br>OF <span class="highlight">SHADOWS</span>
+      </h1>
+      <p class="hero-subtitle">ENTER THE DIGITAL UNIVERSE</p>
+      <p class="hero-description">
+        A cinematic gateway to multiple worlds — music, media, social platforms, and realms yet unknown.
+        Each portal is a door to a different dimension of creativity.
+      </p>
+      <div class="hero-cta-group">
+        <a href="#portals" class="btn-primary">Explore Portals</a>
+        <a href="#about"   class="btn-secondary">About the Universe</a>
+        <button id="pwa-install-btn" class="btn-secondary" style="display:none" aria-label="Install app">
+          📲 Install App
+        </button>
+      </div>
+      <div class="hero-scroll-hint" aria-hidden="true">
+        <span>SCROLL</span>
+        <span class="scroll-line"></span>
+      </div>
+    </section>
+
+    <!-- ── Announcements Ticker ────────────────────────────────── -->
+    <div id="announcements-bar" style="display:none" aria-label="Announcements" role="marquee">
+      <div id="ticker-wrap" class="ticker-wrap"></div>
+    </div>
+
+    <!-- ── Universe Portals ────────────────────────────────────── -->
+    <section id="portals" class="universe-section" data-section="portals" aria-label="Universe portals">
+      <div class="section-header">
+        <span class="section-eyebrow">EXPLORE THE UNIVERSE</span>
+        <h2 class="section-title">CHOOSE YOUR PORTAL</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+      </div>
+
+      <!-- Search & Filter -->
+      <div class="filter-bar" role="search">
+        <label for="portal-search" class="visually-hidden">Search portals</label>
+        <input
+          type="search"
+          id="portal-search"
+          class="search-input"
+          placeholder="Search worlds…"
+          aria-label="Search portals"
+        >
+        <div class="filter-chips" role="group" aria-label="Filter by category">
+          <button class="filter-chip active" data-filter="all">All</button>
+          <button class="filter-chip" data-filter="Music">Music</button>
+          <button class="filter-chip" data-filter="Social">Social</button>
+          <button class="filter-chip" data-filter="Media">Media</button>
+          <button class="filter-chip" data-filter="Creative">Creative</button>
+          <button class="filter-chip" data-filter="Future">Future</button>
+        </div>
+      </div>
+
+      <!-- Loading skeletons -->
+      <div id="portals-loading" class="portals-grid" aria-label="Loading portals" style="display:grid">
+        <div class="skeleton skeleton-card" role="presentation"></div>
+        <div class="skeleton skeleton-card" role="presentation"></div>
+        <div class="skeleton skeleton-card" role="presentation"></div>
+      </div>
+
+      <!-- Portals grid -->
+      <div id="portals-grid" class="portals-grid" role="list" aria-live="polite"></div>
+
+      <!-- Empty state -->
+      <div id="portals-empty" class="empty-state" style="display:none">
+        <div class="icon" aria-hidden="true">🌌</div>
+        <p>No portals found. The universe is expanding — check back soon.</p>
+      </div>
+    </section>
+
+    <!-- ── Projects / Future Realms ────────────────────────────── -->
+    <section id="projects" class="universe-section" data-section="projects" aria-label="Future projects and realms">
+      <div class="section-header">
+        <span class="section-eyebrow">COMING FROM THE SHADOWS</span>
+        <h2 class="section-title">FUTURE REALMS</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+        <p style="color:var(--text-secondary);margin-top:1.2rem;max-width:520px;margin-left:auto;margin-right:auto;font-size:0.95rem">
+          Worlds still forming in the darkness. Watch this space.
+        </p>
+      </div>
+
+      <!-- Projects render here (populated from same portals data, filtered to 'soon') -->
+      <div id="projects-grid" class="portals-grid" role="list" aria-live="polite">
+        <div class="portal-card coming-soon" role="region" aria-label="Unknown project">
+          <div class="portal-bg-placeholder" aria-hidden="true">🔒</div>
+          <div class="portal-body">
+            <span class="portal-category-badge">Future</span>
+            <h3 class="portal-name">??? UNKNOWN PROJECT</h3>
+            <p class="portal-description">Something is forming in the shadows. Identity classified.</p>
+          </div>
+          <div class="portal-footer">
+            <span class="portal-status soon">🔒 COMING SOON</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Stats ─────────────────────────────────────────────────── -->
+    <section class="universe-section" aria-label="Universe statistics" style="padding-top:2rem;padding-bottom:4rem">
+      <div class="about-stats" style="max-width:600px;margin:0 auto">
+        <div class="stat-card">
+          <span id="stat-worlds" class="stat-number">—</span>
+          <span class="stat-label">Active Worlds</span>
+        </div>
+        <div class="stat-card">
+          <span id="stat-projects" class="stat-number">—</span>
+          <span class="stat-label">Total Projects</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">∞</span>
+          <span class="stat-label">Realms to Come</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">1</span>
+          <span class="stat-label">Universe</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── About ─────────────────────────────────────────────────── -->
+    <section id="about" class="universe-section" data-section="about" aria-label="About">
+      <div class="section-header">
+        <span class="section-eyebrow">THE ARCHITECT</span>
+        <h2 class="section-title">ABOUT THE UNIVERSE</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+      </div>
+      <div class="about-inner">
+        <div class="about-text">
+          <p>
+            Chris Legend of Shadows is a creator, builder, and visionary — crafting digital worlds
+            across music, media, social platforms, and beyond.
+          </p>
+          <p>
+            The Universe is the central gateway to all of these worlds. Each portal leads to a fully
+            independent website — each one its own realm, its own story.
+          </p>
+          <p>
+            Dark. Mysterious. Cinematic. Futuristic. This is the digital identity of Chris Legend of Shadows.
+          </p>
+        </div>
+        <div class="about-stats">
+          <div class="stat-card">
+            <span class="stat-number" style="font-size:1.5rem">🎵</span>
+            <span class="stat-label">Music</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number" style="font-size:1.5rem">🌐</span>
+            <span class="stat-label">Social</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number" style="font-size:1.5rem">🎬</span>
+            <span class="stat-label">Media</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number" style="font-size:1.5rem">🚀</span>
+            <span class="stat-label">Future</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Contact ───────────────────────────────────────────────── -->
+    <section id="contact" data-section="contact" aria-label="Contact">
+      <div class="contact-inner">
+        <div class="section-header">
+          <span class="section-eyebrow">REACH THE SHADOWS</span>
+          <h2 class="section-title">CONTACT</h2>
+          <div class="section-divider" aria-hidden="true"></div>
+        </div>
+        <p>Step into the shadows and make contact. Every portal begins with a conversation.</p>
+        <div class="contact-links">
+          <a href="mailto:christijerina46@gmail.com" class="btn-primary">Send a Message</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ──────────────────────────────────────────────── -->
+  <footer role="contentinfo">
+    <p>© <span id="footer-year"></span> <span>CHRIS LEGEND OF SHADOWS</span> — All Rights Reserved</p>
+    <p style="margin-top:0.4rem;font-size:0.7rem">UNIVERSE v1.0</p>
+  </footer>
+
+  <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+
+  <!-- Service Worker registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
+
+  <!-- App -->
+  <script type="module" src="js/app.js"></script>
+
+  <!-- Visually hidden utility class -->
+  <style>
+    .visually-hidden {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+  </style>
+</body>
+</html>
