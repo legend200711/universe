@@ -75,12 +75,19 @@ loginForm && loginForm.addEventListener('submit', async e => {
     await login(email, pass);
     // onAuthChange handles the rest
   } catch (err) {
-    loginError.textContent = err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found'
-      ? 'Invalid credentials.'
+    const invalidCodes = [
+      'auth/wrong-password',
+      'auth/user-not-found',
+      'auth/invalid-credential',
+      'auth/invalid-email',
+    ];
+    loginError.textContent = invalidCodes.includes(err.code)
+      ? 'Invalid credentials. Check your password and try again.'
       : err.message || 'Login failed.';
     loginError.classList.add('visible');
     loginBtn.disabled = false;
     loginBtn.textContent = 'ACCESS THE UNIVERSE';
+    console.error('Login error:', err.code, err.message);
   }
 });
 
